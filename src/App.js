@@ -3,6 +3,8 @@ import { Component } from 'react';
 
 class App extends Component {
 
+  timeOutUpdate = null;
+
   state ={
       counter: 0,
       posts: [
@@ -25,13 +27,22 @@ class App extends Component {
 }
 
 // fetch aqui
+// montagem do componente roda apenas uma vez
   componentDidMount(){
     this.handleTimeout()
 }
 
+//quando há alterações no estado do componente
 componentDidUpdate(){
 
   this.handleTimeout()
+
+}
+
+//para desmontar o componente
+conponentWillUnmount(){
+
+  clearTimeout(this.timeOutUpdate)
 
 }
 
@@ -39,7 +50,7 @@ handleTimeout = () => {
   
   const { posts, counter} = this.state;
 
-  setTimeout(() => {
+  this.timeOutUpdate = setTimeout(() => {
 
     posts[0].title = "o titulo mudou..."
     this.setState({

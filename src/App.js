@@ -3,80 +3,63 @@ import { Component } from 'react';
 
 class App extends Component {
 
-  timeOutUpdate = null;
 
   state ={
-      counter: 0,
-      posts: [
-        {
-          id: 1,
-          title: 'O título 1',
-          body: 'O corpo 1',
-        },
-        {
-          id: 2,
-          title: 'O título 2',
-          body: 'O corpo 2',
-        },
-        {
-          id: 3,
-          title: 'O título 3',
-          body: 'O corpo 3',
-        },
-      ],
+      posts: [],
+      photos: [],
 }
 
 // fetch aqui
 // montagem do componente roda apenas uma vez
   componentDidMount(){
-    this.handleTimeout()
+
+    this.loadPosts();
 }
 
-//quando há alterações no estado do componente
-componentDidUpdate(){
+  loadPosts = async () => {
+    
+    const postsResponse = fetch('https://jsonplaceholder.typicode.com/posts')
 
-  this.handleTimeout()
+    const photosResponse = fetch('https://jsonplaceholder.typicode.com/photos')
 
-}
+    const [posts, photos] = await Promise.all([postsResponse, photosResponse]);
 
-//para desmontar o componente
-conponentWillUnmount(){
+    const postsJson = await posts.json();
+    const photosJson = await photos.json();
 
-  clearTimeout(this.timeOutUpdate)
-
-}
-
-handleTimeout = () => {
-  
-  const { posts, counter} = this.state;
-
-  this.timeOutUpdate = setTimeout(() => {
-
-    posts[0].title = "o titulo mudou..."
-    this.setState({
-      posts,
-      counter: counter + 1
+    const photosAndPosts = postsJson.map((post, index) => {
+      return{
+        ...post,
+        cover: photosJson[index].url,
+      }
+      
     })
 
-  },2000)
+    this.setState({posts: photosAndPosts});
 
-}
+  };
 
   render() {
 
-  const { posts, counter} = this.state;
+  const {posts} = this.state;
 
   return (
     
-    <div className="App">
-      <h1>{counter}</h1>
+  <section className='container'>
+  <div className="posts">
       {posts.map((post) => (
-        <div key={post.id}>
+        <div key={post.id} className='post'>
+          <img src={post.cover} alt="" />
+          <div className='text'>
           <h1>{post.title}</h1>
           <h3>{post.body}</h3>
+          </div>
+          
         </div>
       ))}
-    </div>
+  </div>
+  </section>
+    
   );
 }
 }

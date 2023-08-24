@@ -31,3 +31,16 @@
 .post img{
   max-width: 100%;
 }
+
+#txtSearch{
+  outline: 0;
+  width: 98%;
+  height: 40px;
+  border-radius: 5px;
+  border: 0 none;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: #999;
+  font-weight: 500;
+  font-size: 20px;
+}
